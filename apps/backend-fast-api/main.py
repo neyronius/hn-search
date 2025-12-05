@@ -1,8 +1,10 @@
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, APIRouter, Query
 from typing import List, Dict, Any
 
 # 1. Initialize the FastAPI application
 app = FastAPI(title="Simple Search API")
+
+api_router = APIRouter(prefix="/api")
 
 # Hardcoded list of search results
 HARDCODED_RESULTS: List[Dict[str, Any]] = [
@@ -11,7 +13,7 @@ HARDCODED_RESULTS: List[Dict[str, Any]] = [
     {"id": 3, "title": "Result Three", "snippet": "This is the third search result.", "url": "https://example.com/three"},
 ]
 
-@app.get("/search")
+@api_router.get("/search")
 async def search_results(
     q: str = Query(..., description="The query string to search for")
 ):
@@ -29,6 +31,8 @@ async def search_results(
     }
 
     return response_data
+
+app.include_router(api_router)
 
 # Optional: Add a root endpoint for easy verification
 @app.get("/")
